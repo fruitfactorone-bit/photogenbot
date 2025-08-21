@@ -7,13 +7,15 @@
   <style>
     :root{
       --bg1: #071024;
-      --card-bg: #081024; /* фон внутри карточек — совпадает с окружением */
+      --card-bg: #081024;
       --accent: #00c2ff;
       --accent-2: #6c5ce7;
       --card: rgba(255,255,255,0.04);
       --muted: rgba(255,255,255,0.65);
       --radius: 12px;
     }
+
+    /* базовые */
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
     body{
@@ -26,6 +28,7 @@
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
     .logo{display:flex;align-items:center;gap:12px}
     .logo .mark{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(12,20,40,0.6)}
+    .logo .mark svg{width:22px;height:22px}
     .logo h1{font-size:18px;margin:0;font-weight:700}
     .nav{display:flex;gap:12px;align-items:center}
     .nav a{color:var(--muted);text-decoration:none;font-size:14px}
@@ -58,7 +61,8 @@
     .float-inner{ transform:translateY(0); animation:float 6s ease-in-out infinite; display:inline-block; }
     @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
 
-    /* ===== EXAMPLES GRID: адаптив и поведение на мобиле (без обрезки по бокам) ===== */
+    /* ===== ВАРИАНТ C: одинаковые коробки, картинка как background (contain) ===== */
+
     .examples-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -66,60 +70,52 @@
       margin-bottom: 8px;
     }
 
-    /* Десктоп: заполняем блок, используем cover для полноэкранного вида */
-    @media (min-width: 901px) {
-      .examples-grid { grid-template-columns: repeat(3, 1fr); }
-      .examples-grid .feature img {
-        width: 100%;
-        height: 260px; /* регулирование высоты для десктопа */
-        object-fit: cover; /* заполняет блок, возможна обрезка — нормально для широких экранов */
-        object-position: center;
-        border-radius: 10px;
-        display: block;
-        background: var(--card-bg);
-      }
-    }
-
-    /* Планшет: чуть ниже высота, также cover */
-    @media (max-width: 900px) and (min-width: 521px) {
-      .examples-grid { grid-template-columns: repeat(2, 1fr); }
-      .examples-grid .feature img {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-        object-position: center;
-        border-radius: 10px;
-        display: block;
-        background: var(--card-bg);
-      }
-    }
-
-    /* Мобильный: сделали ниже и без боковой обрезки -> contain */
-    @media (max-width: 520px) {
-      .examples-grid .feature img {
-        width: 100%;
-        height: 160px;
-        object-fit: cover;   /* заполнит блок, может обрезать по бокам/верху */
-        object-position: center;
-        border-radius: 10px;
-        display: block;
-      }
-    }
-
-
-
-
+    /* общий стиль карточки */
     .examples-grid .feature {
       padding: 0;
-      background: transparent;
-      border: none;
-      min-height: 0;
-      display: block;
+      background: var(--card-bg);
       border-radius: 10px;
       overflow: hidden;
+      display: block;
+      border: 1px solid rgba(255,255,255,0.03);
+      min-height: 0;
     }
 
-    .feature .title { padding: 8px 12px; font-weight:700; color: #fff; }
+    /* контейнер для фоновой картинки */
+    .img-wrap {
+      width: 100%;
+      height: 260px;                /* десктопный размер по умолчанию */
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;     /* помещает картинку целиком, без обрезки */
+      display: block;
+    }
+
+    /* alt-подпись для доступности (визуально скрытая) */
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    /* планшет */
+    @media (max-width: 900px) and (min-width: 521px) {
+      .examples-grid { grid-template-columns: repeat(2, 1fr); }
+      .img-wrap { height: 220px; }
+    }
+
+    /* мобильный: ниже блоки (160px) */
+    @media (max-width: 520px) {
+      .examples-grid { grid-template-columns: 1fr; }
+      .img-wrap { height: 160px; }
+    }
+
   </style>
 </head>
 <body>
@@ -147,33 +143,33 @@
     </header>
 
     <main class="hero">
-        <div>
-            <h2 data-i18n="hero_title">Смелые эксперименты с фото — открой то, что обычно скрыто.</h2>
-            <p data-i18n="hero_sub">StarAI позволяет воплотить ваши самые сокровенные фантазии в кадре. Первая обработка — <strong>бесплатно</strong></p>
-            <div class="cta-row">
-            <a class="btn-cta" id="go" href="https://t.me/sd_genai_bot" target="_blank" data-i18n="cta">Запустить бота</a>
-            <a class="btn-ghost" href="#how" data-i18n="cta_secondary">Как это работает</a>
-            </div>
-            <div style="margin-top:14px;color:var(--muted);font-size:13px" data-i18n="hero_note">Никаких водяных знаков, 1 бесплатная полноценная обработка при первом заходе.</div>
+      <div>
+        <h2 data-i18n="hero_title">Смелые эксперименты с фото — открой то, что обычно скрыто.</h2>
+        <p data-i18n="hero_sub">StarAI позволяет воплотить ваши самые сокровенные фантазии в кадре. Первая обработка — <strong>бесплатно</strong></p>
+        <div class="cta-row">
+          <a class="btn-cta" id="go" href="https://t.me/sd_genai_bot" target="_blank" data-i18n="cta">Запустить бота</a>
+          <a class="btn-ghost" href="#how" data-i18n="cta_secondary">Как это работает</a>
         </div>
+        <div style="margin-top:14px;color:var(--muted);font-size:13px" data-i18n="hero_note">Никаких водяных знаков, 1 бесплатная полноценная обработка при первом заходе.</div>
+      </div>
 
-        <aside class="demo-card">
-          <div class="float-inner" style="display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-              <strong data-i18n="demo_title">Пример обработки</strong>
+      <aside class="demo-card">
+        <div class="float-inner" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <strong data-i18n="demo_title">Пример обработки</strong>
+          </div>
+          <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+            <div style="text-align:center;">
+              <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img430.png" alt="До" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
+              <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_before">До</div>
             </div>
-            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
-              <div style="text-align:center;">
-                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img430.png" alt="До" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
-                <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_before">До</div>
-              </div>
-              <div style="text-align:center;">
-                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img431.png" alt="После" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
-                <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_after">После</div>
-              </div>
+            <div style="text-align:center;">
+              <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img431.png" alt="После" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
+              <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_after">После</div>
             </div>
           </div>
-        </aside>
+        </div>
+      </aside>
     </main>
 
     <section id="how" style="margin-bottom:28px">
@@ -201,16 +197,19 @@
       <h3 style="margin-bottom:12px" data-i18n="examples_title">Примеры работ</h3>
 
       <div class="examples-grid">
-        <div class="feature">
-          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img428.png" alt="exm1"/>
+        <div class="feature" role="group" aria-label="Пример 1">
+          <div class="img-wrap" role="img" aria-label="Пример 1: до/после" style="background-image:url('https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img428.png')"></div>
+          <span class="sr-only">Пример 1</span>
         </div>
 
-        <div class="feature">
-          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img429.png" alt="exm2"/>
+        <div class="feature" role="group" aria-label="Пример 2">
+          <div class="img-wrap" role="img" aria-label="Пример 2: до/после" style="background-image:url('https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img429.png')"></div>
+          <span class="sr-only">Пример 2</span>
         </div>
 
-        <div class="feature">
-          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img432.png" alt="exm3"/>
+        <div class="feature" role="group" aria-label="Пример 3">
+          <div class="img-wrap" role="img" aria-label="Пример 3: до/после" style="background-image:url('https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img432.png')"></div>
+          <span class="sr-only">Пример 3</span>
         </div>
       </div>
     </section>
@@ -230,6 +229,7 @@
   </div>
 
   <script>
+    // переводные строки
     const translations = {
       ru: {
         title: 'StarAI',
@@ -260,7 +260,7 @@
         faq_q2: 'Сколько стоит обработка одного фото?',
         faq_a2: 'Цена обработки одного фото зависит от выбранного пакета. Прайс и способы оплаты доступны прямо в боте.',
         faq_q3: 'Как быстро обрабатывается фото?',
-        faq_a3: 'Обычно 40–60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настройках).',
+        faq_a3: 'Обычно 40–60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настроек).',
         copyright: 'StarAI 2025'
       },
       en: {
@@ -297,6 +297,7 @@
       }
     };
 
+    // apply translations to page
     function applyLang(lang){
       document.documentElement.lang = (lang === 'en') ? 'en' : 'ru';
       Object.keys(translations[lang]).forEach(key => {
@@ -305,9 +306,11 @@
           el.innerHTML = translations[lang][key];
         });
       });
+      // toggle active class on buttons
       document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
     }
 
+    // events
     document.addEventListener('DOMContentLoaded', ()=>{
       const saved = localStorage.getItem('site_lang');
       const defaultLang = saved || (navigator.language && navigator.language.startsWith('en') ? 'en' : 'ru');
