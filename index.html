@@ -7,11 +7,12 @@
   <style>
     :root{
       --bg1: #071024;
+      --card-bg: #081024; /* фон внутри карточек — совпадает с окружением */
       --accent: #00c2ff;
       --accent-2: #6c5ce7;
       --card: rgba(255,255,255,0.04);
       --muted: rgba(255,255,255,0.65);
-      --radius: 16px;
+      --radius: 12px;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
@@ -21,10 +22,10 @@
       -webkit-tap-highlight-color:transparent;
     }
     .container{max-width:1100px;margin:0 auto}
+
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
     .logo{display:flex;align-items:center;gap:12px}
     .logo .mark{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(12,20,40,0.6)}
-    .logo .mark svg{width:22px;height:22px}
     .logo h1{font-size:18px;margin:0;font-weight:700}
     .nav{display:flex;gap:12px;align-items:center}
     .nav a{color:var(--muted);text-decoration:none;font-size:14px}
@@ -37,17 +38,13 @@
     .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px 16px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
 
     .demo-card{background: rgba(255,255,255,0.02);padding:18px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6); overflow:visible;}
-    .demo-image{height:240px;border-radius:10px;overflow:hidden;background:#081024;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03)}
-    .demo-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .demo-image{height:240px;border-radius:10px;overflow:hidden;background:var(--card-bg);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03)}
     .tag{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
 
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px}
     .feature{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
     .feature h4{margin:8px 0 6px 0}
     .muted{color:var(--muted);font-size:14px}
-
-    .social-proof{display:flex;gap:12px;align-items:center;margin-bottom:40px}
-    .avatar{width:56px;height:56px;border-radius:10px;background:#e6eef7;display:flex;align-items:center;justify-content:center;color:#021024;font-weight:800}
 
     footer {padding-top: 24px;border-top: 1px solid rgba(255,255,255,0.03);color: var(--muted);font-size: 13px;text-align: center;}
 
@@ -61,7 +58,7 @@
     .float-inner{ transform:translateY(0); animation:float 6s ease-in-out infinite; display:inline-block; }
     @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
 
-    /* ===== FIX FOR EXAMPLES GRID (responsive sizes) ===== */
+    /* ===== EXAMPLES GRID: адаптив и поведение на мобиле (без обрезки по бокам) ===== */
     .examples-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -69,38 +66,43 @@
       margin-bottom: 8px;
     }
 
-    /* Desktop: fixed visual height so cards не становятся слишком высокими */
+    /* Десктоп: заполняем блок, используем cover для полноэкранного вида */
     @media (min-width: 901px) {
       .examples-grid { grid-template-columns: repeat(3, 1fr); }
       .examples-grid .feature img {
         width: 100%;
-        height: 260px; /* регулировать: 220-320 */
-        object-fit: cover;
+        height: 260px; /* регулирование высоты для десктопа */
+        object-fit: cover; /* заполняет блок, возможна обрезка — нормально для широких экранов */
+        object-position: center;
         border-radius: 10px;
         display: block;
+        background: var(--card-bg);
       }
     }
 
-    /* Планшет */
+    /* Планшет: чуть ниже высота, также cover */
     @media (max-width: 900px) and (min-width: 521px) {
       .examples-grid { grid-template-columns: repeat(2, 1fr); }
       .examples-grid .feature img {
         width: 100%;
         height: 220px;
         object-fit: cover;
+        object-position: center;
         border-radius: 10px;
         display: block;
+        background: var(--card-bg);
       }
     }
 
-    /* Мобильный: вертикальная карточка */
+    /* Мобильный: сделали ниже и без боковой обрезки -> contain */
     @media (max-width: 520px) {
       .examples-grid { grid-template-columns: 1fr; }
       .examples-grid .feature img {
         width: 100%;
-        height: auto;
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
+        height: 160px;          /* ниже, как ты хотел */
+        object-fit: contain;    /* не обрезает по бокам */
+        object-position: center;
+        background: var(--card-bg); /* подложка вместо обрезки */
         border-radius: 10px;
         display: block;
       }
@@ -161,11 +163,11 @@
             </div>
             <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
               <div style="text-align:center;">
-                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img430.png" alt="До" style="width:170px; border-radius:10px; display:block;" />
+                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img430.png" alt="До" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
                 <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_before">До</div>
               </div>
               <div style="text-align:center;">
-                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img431.png" alt="После" style="width:170px; border-radius:10px; display:block;" />
+                <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img431.png" alt="После" style="width:170px; border-radius:10px; display:block; background:var(--card-bg)" />
                 <div style="margin-top:6px; color: var(--muted); font-size:14px;" data-i18n="demo_after">После</div>
               </div>
             </div>
@@ -194,23 +196,23 @@
       </div>
     </section>
 
-  <section id="examples" style="margin-bottom:28px">
-    <h3 style="margin-bottom:12px" data-i18n="examples_title">Примеры работ</h3>
+    <section id="examples" style="margin-bottom:28px">
+      <h3 style="margin-bottom:12px" data-i18n="examples_title">Примеры работ</h3>
 
-    <div class="examples-grid">
-      <div class="feature">
-        <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img428.png" alt="exm1"/>
-      </div>
+      <div class="examples-grid">
+        <div class="feature">
+          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img428.png" alt="exm1"/>
+        </div>
 
-      <div class="feature">
-        <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img429.png" alt="exm2"/>
-      </div>
+        <div class="feature">
+          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img429.png" alt="exm2"/>
+        </div>
 
-      <div class="feature">
-        <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img432.png" alt="exm3"/>
+        <div class="feature">
+          <img loading="lazy" src="https://raw.githubusercontent.com/fruitfactorone-bit/photogenbot/main/img/img432.png" alt="exm3"/>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
     <section id="faq" style="margin-bottom:28px">
       <h3 style="margin-bottom:12px" data-i18n="faq_title">Частые вопросы</h3>
@@ -220,10 +222,6 @@
         <details class="feature"><summary style="cursor:pointer;font-weight:700" data-i18n="faq_q3">Как быстро обрабатывается фото?</summary><div class="muted" style="margin-top:8px" data-i18n="faq_a3">Обычно 40–60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настроек).</div></details>
       </div>
     </section>
-
-    <div class="social-proof">
-      <div style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
 
     <footer>
       <div>© <strong data-i18n="copyright">StarAI 2025</strong> </div>
@@ -261,7 +259,7 @@
         faq_q2: 'Сколько стоит обработка одного фото?',
         faq_a2: 'Цена обработки одного фото зависит от выбранного пакета. Прайс и способы оплаты доступны прямо в боте.',
         faq_q3: 'Как быстро обрабатывается фото?',
-        faq_a3: 'Обычно 40–60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настроек).',
+        faq_a3: 'Обычно 40–60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настройках).',
         copyright: 'StarAI 2025'
       },
       en: {
