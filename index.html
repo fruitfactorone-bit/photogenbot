@@ -96,17 +96,16 @@
 
     /* Мобильный: сделали ниже и без боковой обрезки -> contain */
     @media (max-width: 520px) {
-      .examples-grid { grid-template-columns: 1fr; }
       .examples-grid .feature img {
         width: 100%;
-        height: 160px;          /* ниже, как ты хотел */
-        object-fit: contain;    /* не обрезает по бокам */
+        height: 160px;
+        object-fit: cover;   /* заполнит блок, может обрезать по бокам/верху */
         object-position: center;
-        background: var(--card-bg); /* подложка вместо обрезки */
         border-radius: 10px;
         display: block;
       }
     }
+
 
 
 
