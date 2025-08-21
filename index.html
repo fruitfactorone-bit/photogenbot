@@ -59,6 +59,24 @@
     @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
 
     /* ===== EXAMPLES GRID: адаптив и поведение на мобиле (без обрезки по бокам) ===== */
+
+    .demo-card img {
+      width: 170px;
+      border-radius: 10px;
+      display: block;
+      background: var(--card-bg);
+      height: auto;
+    }
+
+    /* На телефоне — делаем шире */
+    @media (max-width: 520px) {
+      .demo-card img {
+        width: 100%;
+        max-width: 260px; /* можешь менять под вкус: 240–280px */
+      }
+    }
+
+
     .examples-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
