@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarAI — без градиентов</title>
+  <style>
+    :root{
+      --bg1: #071024; /* однотонный фон */
+      --bg2: #071024;
+      --accent: #00c2ff;
+      --accent-2: #6c5ce7;
+      --card: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.65);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
+    body{
+      /* убрал все градиенты — сплошной фон */
+      background: var(--bg1);
+      color:#fff; -webkit-font-smoothing:antialiased;padding:40px 20px;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .container{max-width:1100px;margin:0 auto}
+
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+    .logo{display:flex;align-items:center;gap:12px}
+    /* mark — без градиента, простой акцент */
+    .logo .mark{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(12,20,40,0.6)}
+    .logo .mark svg{width:22px;height:22px}
+    .logo h1{font-size:18px;margin:0;font-weight:700}
+    .nav{display:flex;gap:12px;align-items:center}
+    .nav a{color:var(--muted);text-decoration:none;font-size:14px}
+
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;margin-bottom:36px}
+    .hero h2{font-size:40px;margin:0 0 12px 0;line-height:1.02}
+    .hero p{margin:0 0 22px 0;color:var(--muted);font-size:16px}
+    .cta-row{display:flex;gap:12px;align-items:center}
+    .btn-cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:14px 20px;border-radius:12px;color:#021024;text-decoration:none;font-weight:700;box-shadow:0 10px 30px rgba(106,204,255,0.08);}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px 16px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
+
+    /* demo-card: однотонный фон вместо градиента */
+    .demo-card{
+      background: rgba(255,255,255,0.02);
+      padding:18px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6); overflow:visible;
+    } 
+    .demo-image{height:240px;border-radius:10px;overflow:hidden;background:#081024;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03)}
+    .demo-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .tag{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px}
+    .feature{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+    .feature h4{margin:8px 0 6px 0}
+    .muted{color:var(--muted);font-size:14px}
+
+    .social-proof{display:flex;gap:12px;align-items:center;margin-bottom:40px}
+    /* avatar без градиента */
+    .avatar{width:56px;height:56px;border-radius:10px;background:#e6eef7;display:flex;align-items:center;justify-content:center;color:#021024;font-weight:800}
+
+    footer {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .demo-image{height:180px}
+      .features{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:520px){
+      body{padding:20px}
+      .features{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+    }
+
+    /* оставил лёгкую анимацию только внутри карточки (опционально) */
+    .float-inner{ transform:translateY(0); animation:float 6s ease-in-out infinite; display:inline-block; }
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8S3 16.418 3 12z" stroke="rgba(255,255,255,0.9)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.5 12.5c1-1.5 2.7-1.7 4-1.2 1.5.6 2 2 3.5 2.1" stroke="#021024" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+        <div>
+          <h1>StarAI</h1>
+          <div style="font-size:12px;color:var(--muted)">Быстрое редактирование и эксперименты с фото</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#how">Как работает</a>
+        <a href="#examples">Примеры</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+        <div>
+            <h2>Смелые эксперименты с фото — открой то, что обычно скрыто.</h2>
+            <p>StarAI позволяет воплотить ваши самые сокровенные фантазии в кадре. Первая обработка — <strong>бесплатно</strong></p>
+            <div class="cta-row">
+            <a class="btn-cta" id="go" href="https://t.me/sd_genai_bot" target="_blank">Октрыть бот</a>
+            <a class="btn-ghost" href="#how">Как это работает</a>
+            </div>
+            <div style="margin-top:14px;color:var(--muted);font-size:13px">Никаких водяных знаков, 1 бесплатная полноценная обработка при первом заходе.</div>
+        </div>
+
+        <aside class="demo-card">
+          <div class="float-inner" style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <strong>Пример обработки</strong>
+            </div>
+            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <img src="https://raw.githubusercontent.com/moddred755/stars-pay-webapp/main/img/img430.png" alt="До" style="width:170px; border-radius:10px;"/>
+                <div style="margin-top:6px; color: var(--muted); font-size:14px;">До</div>
+              </div>
+              <div style="text-align:center;">
+                <img src="https://raw.githubusercontent.com/moddred755/stars-pay-webapp/main/img/img431.png" alt="После" style="width:170px; border-radius:10px;"/>
+                <div style="margin-top:6px; color: var(--muted); font-size:14px;">После</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+    </main>
+
+    <section id="how" style="margin-bottom:28px">
+      <h3 style="margin-bottom:12px">Как это работает</h3>
+      <div class="features">
+        <div class="feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2v20" stroke="rgba(255,255,255,0.9)" stroke-width="1.2" stroke-linecap="round"/><path d="M2 12h20" stroke="rgba(255,255,255,0.9)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <h4>1. Загрузи фото</h4>
+          <div class="muted">Отправь фото в бот — он начнёт обработку.</div>
+        </div>
+        <div class="feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.9)" stroke-width="1.2"/></svg>
+          <h4>2. Современные нейросети</h4>
+          <div class="muted">Мы используем проверенные методы, чтобы получить аккуратный и реалистичный результат без лишних артефактов.</div>
+        </div>
+        <div class="feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 7v6l4 2" stroke="rgba(255,255,255,0.9)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <h4>3. Готово за минуты</h4>
+          <div class="muted">Первая обработка бесплатна — попробуйте прямо сейчас.</div>
+        </div>
+      </div>
+    </section>
+
+  <section id="examples" style="margin-bottom:28px">
+    <h3 style="margin-bottom:12px">Примеры работ</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      
+      <div class="feature" style="min-height:120px;display:flex;flex-direction:column;align-items:center">
+        <div style="font-weight:700;margin-bottom:8px"></div>
+        <img src="https://raw.githubusercontent.com/moddred755/stars-pay-webapp/main/img/img428.png" 
+            alt="exm1" 
+            style="width:100%;height:200px;object-fit:cover;border-radius:10px;"/>
+      </div>
+      
+      <div class="feature" style="min-height:120px;display:flex;flex-direction:column;align-items:center">
+        <div style="font-weight:700;margin-bottom:8px"></div>
+        <img src="https://raw.githubusercontent.com/moddred755/stars-pay-webapp/main/img/img429.png" 
+            alt="exm2" 
+            style="width:100%;height:200px;object-fit:cover;border-radius:10px;"/>
+      </div>
+      
+      <div class="feature" style="min-height:120px;display:flex;flex-direction:column;align-items:center">
+        <div style="font-weight:700;margin-bottom:8px"></div>
+        <img src="https://raw.githubusercontent.com/moddred755/stars-pay-webapp/main/img/img432.png" 
+            alt="exm3" 
+            style="width:100%;height:200px;object-fit:cover;border-radius:10px;"/>
+      </div>
+      
+    </div>
+  </section>
+
+
+    <section id="faq" style="margin-bottom:28px">
+      <h3 style="margin-bottom:12px">Частые вопросы</h3>
+      <div style="display:grid;gap:12px">
+        <details class="feature"><summary style="cursor:pointer;font-weight:700">Как мы защищаем ваши фотографии?</summary><div class="muted" style="margin-top:8px">Мы используем ваши фото только для обработки и не сохраняем их дольше, чем требуется. Вы всегда можете удалить файлы самостоятельно.</div></details>
+        <details class="feature"><summary style="cursor:pointer;font-weight:700">Сколько стоит после бесплатной обработки?</summary><div class="muted" style="margin-top:8px">Прайс пакетов и способы оплаты доступны в боте. Мы предлагаем пакеты по разной цене.</div></details>
+        <details class="feature"><summary style="cursor:pointer;font-weight:700">Как быстро обрабатывается фото?</summary><div class="muted" style="margin-top:8px">Обычно 40-60 секунд на одну обработку на RTX 3090 (зависит от нагрузки и настроек).</div></details>
+      </div>
+    </section>
+
+    <div class="social-proof">
+      <div style="display:flex;flex-direction:column;gap:8px">
+       
+      </div>
+      
+    </div>
+
+    <footer>
+      <div>© <strong>StarAI 2025</strong> </div>
+    </footer>
+  </div>
+</body>
+</html>
